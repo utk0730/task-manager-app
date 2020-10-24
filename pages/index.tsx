@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { useEffect } from 'react'
 // import axios from "axios"
+import Layout from "./components/common/Layout"
 
 
 export default function Home() {
@@ -57,7 +58,8 @@ export default function Home() {
     // updateTask()
   },[])
   return (
-    <div>
+    <Layout>
+      <div>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
@@ -65,5 +67,7 @@ export default function Home() {
     <p>hello sire</p>
       <p>{JSON.stringify([])}</p>
     </div>
+    </Layout>
+    
   )
 }
