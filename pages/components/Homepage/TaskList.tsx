@@ -154,7 +154,7 @@ export default function TaskList({
                       Description : <span>{message} </span>
                     </p>
                     <p>
-                      Assgined To : <span>{assigned_name}</span>
+                      Assigned To : <span>{assigned_name}</span>
                     </p>
                     <p>
                       Due Date : <span>{new Date(due_date).toLocaleDateString()}</span>{' '}
