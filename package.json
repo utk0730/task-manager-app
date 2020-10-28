@@ -8,15 +8,25 @@
     "start": "next start"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.162",
     "@types/node": "^14.14.2",
+    "@types/react-datepicker": "^3.1.1",
     "@types/react-loader-spinner": "^3.1.1",
+    "@types/react-modal": "^3.10.6",
+    "@types/react-select": "^3.0.22",
     "@types/styled-components": "^5.1.4",
     "axios": "^0.21.0",
+    "final-form": "^4.20.1",
     "form-data": "^3.0.0",
+    "lodash": "^4.17.20",
     "next": "9.5.5",
     "react": "17.0.1",
+    "react-datepicker": "^3.3.0",
     "react-dom": "17.0.1",
+    "react-final-form": "^6.5.2",
     "react-loader-spinner": "^3.1.14",
+    "react-modal": "^3.11.2",
+    "react-select": "^3.1.0",
     "styled-components": "^5.2.0"
   },
   "devDependencies": {

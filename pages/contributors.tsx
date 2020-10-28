@@ -1,30 +1,42 @@
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import Loading from './components/common/Loading'
 import Layout from './components/common/Layout'
 import axios from 'axios'
 import styled from 'styled-components'
 
-export default function Home() {
-  const [users, setUsers] = useState([])
-  const [loading, setLoading] = useState(false)
+import { useTasksState, useDispatchTasks } from '../contexts/TasksContext'
 
+export default function Home() {
+  const state = useTasksState()
+  const dispatch = useDispatchTasks()
+
+  //@ts-ignore
+  const { tasks, loading, selected, users } = state
   const getUserList = async () => {
+    //@ts-ignore
+    dispatch({
+      type: 'FETCH_USERS_REQUEST',
+      payload: true,
+    })
     try {
-      setLoading(true)
       const _result = await axios.get('/api/fetchUsers')
       const {
         data: { status, users },
       } = _result
       if (status == 'success') {
-        setUsers(users)
-        setLoading(false)
-      } else {
-        setUsers([])
-        setLoading(false)
+        //@ts-ignore
+        dispatch({
+          type: 'FETCH_USERS_SUCCESS',
+          payload: users,
+        })
       }
     } catch (error) {
-      setLoading(false)
+      //@ts-ignore
+      dispatch({
+        type: 'FETCH_USERS_FAILS',
+        payload: 'Error fetching users',
+      })
     }
   }
 
@@ -45,7 +57,7 @@ export default function Home() {
           <ContributorsWrapper>
             <h1>Devza Contributors</h1>
             <div>
-              {users.map((_o) => {
+              {users.map((_o: any) => {
                 const { name, picture, id } = _o
                 return (
                   <div key={id}>

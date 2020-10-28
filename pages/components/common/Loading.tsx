@@ -13,7 +13,7 @@ const Loading = () => (
 export default Loading
 
 const StyledLoader = styled.div`
-height:100vh;
+/* height:100vh; */
 display:flex;
 justify-content:center;
 align-items:center;

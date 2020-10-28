@@ -4,11 +4,11 @@ export default function Header() {
   return (
     <HeaderWrapper>
       <div>
-      <Link href="/">
-        <div className="brand">
-          <img src="/assets/images/brand-logo.png" />
-          <p>TaskBoard</p>
-        </div>
+        <Link href="/">
+          <div className="brand">
+            <img src="/assets/images/brand-logo.png" />
+            <p>TaskBoard</p>
+          </div>
         </Link>
 
         <ul>
@@ -19,7 +19,9 @@ export default function Header() {
             <Link href="/todos">Todos</Link>
           </li>
           <li>
-            <a target="_blank" href="https://github.com/utk0730/bikebounty">Github Link</a>
+            <a target="_blank" href="https://github.com/utk0730/bikebounty">
+              Github Link
+            </a>
           </li>
         </ul>
       </div>
@@ -51,6 +53,7 @@ const HeaderWrapper = styled.div`
       font-size: ${({ theme }) => theme.fontSize['4xl']};
       font-weight: 600;
       letter-spacing: 2px;
+      cursor: pointer;
       & > img {
         width: 70px;
         height: 70px;

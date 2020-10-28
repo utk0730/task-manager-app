@@ -1,6 +1,7 @@
 import '../styles/globals.css'
 import { AppProps } from 'next/app'
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
+import { TasksProvider } from "../contexts/TasksContext"
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600&display=swap');
   body {
@@ -49,9 +50,15 @@ const theme = {
 function MyApp({ Component, pageProps }: AppProps) {
   return <>
     <GlobalStyle />
+   
+
+   
     <ThemeProvider theme={theme}>
-    <Component {...pageProps} />
-    </ThemeProvider>
+      <TasksProvider>
+        <Component {...pageProps} />
+        </TasksProvider>
+      </ThemeProvider>
+      
     
   </>
 }
