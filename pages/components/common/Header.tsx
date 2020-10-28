@@ -22,7 +22,7 @@ export default function Header() {
             <Link href="/todos">Todos</Link>
           </li>
           <li>
-            <a target="_blank" href="https://github.com/utk0730/bikebounty">
+            <a target="_blank" href="https://github.com/utk0730/task-manager-app">
               Github Link
             </a>
           </li>
