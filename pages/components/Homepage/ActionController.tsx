@@ -160,4 +160,7 @@ const StyledDatePicker = styled(DatePicker)`
   padding: 0 15px;
   border: ${({ theme }) => `1px solid ${theme.colors.primary}`};
   margin-right: 10px;
+  @media (max-width: 767px) {
+    margin: 0px;
+  }
 `
