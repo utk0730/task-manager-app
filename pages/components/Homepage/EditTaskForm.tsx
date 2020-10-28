@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Input from '../common/Input'
 import Select from '../common/Select'
@@ -12,16 +12,28 @@ import { isEmpty } from 'lodash'
 import { useToasts } from 'react-toast-notifications'
 import {stateSchema} from "../../../contexts/tasksReducer"
 
+
 interface FormSchema {
   setShowModal: any
 }
 
-export default function CreateTaskForm({ setShowModal }: FormSchema) {
+export default function UpdateTaskForm({ setShowModal }: FormSchema) {
   const { addToast } = useToasts()
   const dispatch = useDispatchTasks()
   const state = useTasksState() as stateSchema
+  const { updating, updateError, tasks, users, selectedTask } = state
 
-  const { creating, createError, users } = state
+  //@ts-ignore
+  const [initialValues, setInitialValues] = useState(() => {
+    const _t = tasks.filter((_o) => _o.id == selectedTask)
+    if (_t.length) {
+      const _nt = { ..._t[0] }
+      if (_nt.due_date) {
+        _nt.due_date = new Date(_nt.due_date)
+      }
+      return _nt
+    }
+  })
   const getUserList = async () => {
     //@ts-ignore
     dispatch({
@@ -56,33 +68,43 @@ export default function CreateTaskForm({ setShowModal }: FormSchema) {
   }, [])
   const onSubmit = async (values: any) => {
     const _values = pickBy(values, identity)
-    const { due_date } = _values
+    const { due_date, created_on } = _values
     if (due_date) {
       let _d = new Date(due_date).toLocaleString().replace(/\//g, '-').replace(/\,/g, '').split(' ')
       let _formatD = _d[0].split('-').reverse().join('-') + ' ' + _d[1]
       _values.due_date = _formatD
     }
+    if (created_on) {
+      let _d = new Date().toLocaleString().replace(/\//g, '-').replace(/\,/g, '').split(' ')
+      let _formatD = _d[0].split('-').reverse().join('-') + ' ' + _d[1]
+      _values.created_on = _formatD
+    }
+    _values.taskid = selectedTask
     //@ts-ignore
     dispatch({
-      type: 'CREATE_TASK_REQUEST',
+      type: 'UPDATE_TASK_REQUEST',
     })
     try {
-      const _result: AxiosRequestConfig = await axios.post('/api/createTask', _values)
+      const _result: AxiosRequestConfig = await axios.post('/api/updateTask', _values)
       const {
-        data: { status, error, taskid },
+        data: { status, error },
       } = _result
       if (status == 'success') {
-        _values.id = taskid
-        let _d = new Date().toLocaleString().replace(/\//g, '-').replace(/\,/g, '').split(' ')
-        let _formatD = _d[0].split('-').reverse().join('-') + ' ' + _d[1]
-        _values.created_on = _formatD
         _values.assigned_name = _users?.filter((_o) => _o.value == _values.assigned_to)[0].label
+
+        const _updatedTasks = tasks?.map((_o) => {
+          if (_o.id == selectedTask) {
+            return _values
+          } else {
+            return _o
+          }
+        })
         //@ts-ignore
         dispatch({
-          type: 'CREATE_TASK_SUCCESS',
-          payload: { ..._values },
+          type: 'UPDATE_TASK_SUCCESS',
+          payload: _updatedTasks,
         })
-        addToast('Successfully created task', {
+        addToast('Successfully updated task', {
           appearance: 'success',
           autoDismiss: true,
         })
@@ -90,10 +112,10 @@ export default function CreateTaskForm({ setShowModal }: FormSchema) {
       } else {
         //@ts-ignore
         dispatch({
-          type: 'CREATE_TASK_FAILS',
+          type: 'UPDATE_TASK_FAILS',
           payload: error,
         })
-        addToast('Create task fails', {
+        addToast('Update task fails', {
           appearance: 'error',
           autoDismiss: true,
         })
@@ -101,10 +123,10 @@ export default function CreateTaskForm({ setShowModal }: FormSchema) {
     } catch (error) {
       //@ts-ignore
       dispatch({
-        type: 'CREATE_TASK_FAILS',
-        payload: 'Error creatng new tasks. please try again after some time',
+        type: 'UPDATE_TASK_FAILS',
+        payload: 'Error updating tasks. please try again after some time',
       })
-      addToast('Create task fails', {
+      addToast('Update task fails', {
         appearance: 'error',
         autoDismiss: true,
       })
@@ -119,18 +141,12 @@ export default function CreateTaskForm({ setShowModal }: FormSchema) {
     ;(_obj.label = name), (_obj.value = id)
     return _obj
   })
-  const initValues = {
-    due_date: new Date(),
-    assigned_to: _users[0]?.value,
-    priority: _priorityDropdownOptions[0]?.value,
-    message: '',
-  }
 
   return (
     <MainContainer>
-      <p>Create Task</p>
+      <p>Update Task</p>
       <Form
-        initialValues={initValues}
+        initialValues={initialValues}
         onSubmit={onSubmit}
         render={({ errors, values }) => (
           <form>
@@ -142,7 +158,6 @@ export default function CreateTaskForm({ setShowModal }: FormSchema) {
                   component={Input}
                   type="text"
                   placeholder="Enter task description"
-                  value={initValues?.message}
                 />
               </FormFieldWrapper>
 
@@ -164,16 +179,16 @@ export default function CreateTaskForm({ setShowModal }: FormSchema) {
                 <label>Select Task Priority</label>
                 <Field name="priority" component={Select} options={_priorityDropdownOptions} />
               </FormFieldWrapper>
-              {createError && <p className="error-msg">{createError}</p>}
+              {updateError && <p className="error-msg">{updateError}</p>}
               <div className="btnWrapper">
                 <button
-                  disabled={!isEmpty(errors) || creating}
+                  disabled={!isEmpty(errors) || updating}
                   onClick={(e) => {
                     e.preventDefault()
                     onSubmit(values)
                   }}
                 >
-                  {creating ? 'Creating...' : 'Create Task'}
+                  {updating ? 'Updating...' : 'Update Task'}
                 </button>
               </div>
             </FormWrapper>

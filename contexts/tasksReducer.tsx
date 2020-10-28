@@ -1,10 +1,16 @@
-interface stateSchema {
+export interface stateSchema {
   tasks: any[]
   selectedTask: any
-  selectedPriority: { value: string; label: string }
+  selectedPriority: { value: string; label: string } | null
   startDate: any
   endDate: any
   loading: boolean
+  deleting: boolean
+  deleteError:string
+  creating: boolean
+  createError:string
+  updating: boolean
+  updateError:string
   error: any
   users: any[]
 }
@@ -63,53 +69,55 @@ export const tasksReducer = (state: stateSchema, action: actionSchema) => {
     case 'CREATE_TASK_REQUEST':
       return {
         ...state,
-        loading: true,
+          createError:'',
+         creating: true,
       }
     case 'CREATE_TASK_SUCCESS':
       return {
         ...state,
-        loading: false,
+         creating: false,
         tasks: [...state.tasks, payload],
       }
     case 'CREATE_TASK_FAILS':
       return {
         ...state,
-        loading: false,
-        error: payload,
+        creating: false,
+        createError: payload,
       }
     case 'UPDATE_TASK_REQUEST':
       return {
         ...state,
-        loading: true,
+        updating: true,
       }
     case 'UPDATE_TASK_SUCCESS':
       return {
         ...state,
-        loading: false,
+        updating: false,
         tasks: payload,
       }
-    case 'UPDATE_TASK_SUCCESS':
+    case 'UPDATE_TASK_FAILS':
       return {
         ...state,
-        loading: false,
+        updating: false,
         error: payload,
       }
     case 'DELETE_TASK_REQUEST':
       return {
         ...state,
-        loading: true,
+        deleting: true,
+        deleteError:''
       }
     case 'DELETE_TASK_SUCCESS':
       return {
         ...state,
-        loading: false,
-        tasks: payload,
+        deleting: false,
+        tasks: payload
       }
     case 'DELETE_TASK_FAILS':
       return {
         ...state,
-        loading: false,
-        error: payload,
+        deleting: false,
+        deleteError: payload,
       }
     case 'SET_SELECTED_TASK':
       return {

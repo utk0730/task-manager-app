@@ -6,8 +6,8 @@ export default function Home() {
         <Container>
         <div>
           <ul>
-              <li><span>Typescript</span> : More repetitive typescript schemas to a separate module.</li>
-              <li><span>Pagintaion</span>: Pagination needs more logic to handle all edge cases.</li>
+              <li><span>Typescript</span> : Remove ts-ignore from few places</li>
+              <li><span>Search </span>: Search functionality</li>
               <li><span>ESLint</span> : Some eslint scripts in package json file to check eslint warning and errors.</li>
           </ul>
         </div>

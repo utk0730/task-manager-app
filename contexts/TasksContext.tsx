@@ -1,16 +1,6 @@
 import { useReducer, createContext, useContext } from 'react'
 import { tasksReducer } from './tasksReducer'
-
-interface stateSchema {
-  tasks: any[]
-  selectedTask: any
-  loading: boolean
-  error: any
-  users: any[]
-  selectedPriority: string
-  startDate: any
-  endDate: any
-}
+import {stateSchema} from "./tasksReducer"
 
 const intialState: stateSchema = {
   tasks: [],
@@ -18,24 +8,21 @@ const intialState: stateSchema = {
   loading: false,
   error: null,
   users: [],
-  selectedPriority: '',
+  selectedPriority: null,
   startDate: null,
   endDate: null,
+  deleting: false,
+  deleteError:'',
+  creating: false,
+  createError:'',
+  updating: false,
+  updateError:''
 }
 const TasksStateContext = createContext({})
 const TasksDispatchContext = createContext({})
 
 export const TasksProvider = (props: any) => {
   let [state, dispatch] = useReducer(tasksReducer, intialState)
-
-  //   const updateTask = async () => {
-  //     const _result = await axios.post('/api/updateTask', {
-  //       message: 'Updated task',
-  //       taskid: 576,
-  //     })
-  //     console.log('update task result...', _result)
-  //   }
-
   return (
     <TasksDispatchContext.Provider value={dispatch}>
       <TasksStateContext.Provider value={state}>{props.children}</TasksStateContext.Provider>

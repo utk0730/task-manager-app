@@ -2,6 +2,7 @@ import '../styles/globals.css'
 import { AppProps } from 'next/app'
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { TasksProvider } from "../contexts/TasksContext"
+import { ToastProvider } from 'react-toast-notifications'
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;500;600&display=swap');
   body {
@@ -55,7 +56,10 @@ function MyApp({ Component, pageProps }: AppProps) {
    
     <ThemeProvider theme={theme}>
       <TasksProvider>
+        <ToastProvider>
         <Component {...pageProps} />
+        </ToastProvider>
+        
         </TasksProvider>
       </ThemeProvider>
       

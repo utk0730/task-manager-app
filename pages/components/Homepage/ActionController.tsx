@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { SetStateAction } from 'react'
 import styled from 'styled-components'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
@@ -18,18 +18,38 @@ const customStyles = {
     height: '50px',
   }),
 }
+interface ControllerSchema {
+  showCreateTaskForm: boolean
+  setShowCreateTaskForm: React.Dispatch<SetStateAction<boolean>>
+}
 
-export default function ActionController() {
+export default function ActionController({
+  showCreateTaskForm,
+  setShowCreateTaskForm,
+}: ControllerSchema) {
   const dispatch = useDispatchTasks()
   const state = useTasksState()
 
   //@ts-ignore
   const { tasks, selectedPriority, startDate, endDate } = state
-  const [showCreateTaskForm, setShowCreateTaskForm] = useState<boolean>(false)
   const handleSortByProrityChange = (e: any) => {
     //@ts-ignore
     dispatch({
       type: 'SET_PRIORITY',
+      payload: e,
+    })
+  }
+  const handleStartDateChange = (e: any) => {
+    //@ts-ignore
+    dispatch({
+      type: 'SET_START_DATE',
+      payload: e,
+    })
+  }
+  const handleEndDateChange = (e: any) => {
+    //@ts-ignore
+    dispatch({
+      type: 'SET_END_DATE',
       payload: e,
     })
   }
@@ -38,36 +58,59 @@ export default function ActionController() {
     <>
       <ActionsWrapper>
         <div>
-          <button onClick={() => setShowCreateTaskForm(!showCreateTaskForm)}>Create Task</button>
-          <button>Show all Tasks</button>
+          <button className="filterBtn" onClick={() => setShowCreateTaskForm(!showCreateTaskForm)}>
+            Create Task
+          </button>
+          <button
+            className="filterBtn"
+            onClick={() => {
+              //@ts-ignore
+              dispatch({
+                type: 'SET_PRIORITY',
+                payload: null,
+              })
+              //@ts-ignore
+              dispatch({
+                type: 'SET_START_DATE',
+                payload: null,
+              })
+              //@ts-ignore
+              dispatch({
+                type: 'SET_END_DATE',
+                payload: null,
+              })
+            }}
+          >
+            Reset Filters
+          </button>
         </div>
         <div>
           <StyledSelect
-            placeholder="Sort Task by Priority"
+            placeholder="Select Task by Priority"
             value={selectedPriority}
             onChange={handleSortByProrityChange}
             options={_priorityDropdownOptions}
             styles={customStyles}
           />
+        </div>
+        <div>
           <StyledDatePicker
-            selected={null}
-            onChange={(value) => {
-              console.log(value)
-            }}
+            selected={startDate}
+            onChange={handleStartDateChange}
             showPopperArrow={false}
             showMonthDropdown
             dateFormat="dd/MM/yyyy"
             placeholderText="Select Start Date"
           />
+
           <StyledDatePicker
-            selected={null}
-            onChange={(value) => {
-              console.log(value)
-            }}
+            selected={endDate}
+            onChange={handleEndDateChange}
             showPopperArrow={false}
             showMonthDropdown
             dateFormat="dd/MM/yyyy"
             placeholderText="Select End Date"
+            minDate={startDate}
           />
         </div>
       </ActionsWrapper>
@@ -83,11 +126,19 @@ export default function ActionController() {
 const ActionsWrapper = styled.div`
   margin: 2rem 0rem;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  @media (max-width: 767px) {
+    flex-direction: column;
+    align-items: center;
+  }
+
   & > div {
     display: flex;
+    @media (max-width: 767px) {
+      margin-top: 10px;
+    }
   }
-  & button {
+  & button.filterBtn {
     background: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.white};
     border: none;

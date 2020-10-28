@@ -1,27 +1,20 @@
 import Head from 'next/head'
-import { useEffect } from 'react'
+import { useEffect,useState } from 'react'
 import axios from 'axios'
 import Layout from './components/common/Layout'
 import ActionController from './components/Homepage/ActionController'
 import TaskList from './components/Homepage/TaskList'
 
 import { useTasksState, useDispatchTasks } from '../contexts/TasksContext'
-interface stateSchema {
-  tasks: any[]
-  loading: boolean
-  users: any[]
-  error: any
-  selectedTask: string
-  selectedPriority: { label: string; value: string }
-  startDate: any
-  endDate: any
-}
+import {stateSchema} from "../contexts/tasksReducer"
+
 
 export default function Home() {
   const state = useTasksState() as stateSchema
   const dispatch = useDispatchTasks()
-
-  const { tasks, loading, selectedTask, selectedPriority, startDate, endDate } = state
+  const [showCreateTaskForm, setShowCreateTaskForm] = useState<boolean>(false)
+  const [showUpdateTaskForm, setShowUpdateTaskForm] = useState<boolean>(false)
+  const { tasks, loading, selectedTask, selectedPriority, startDate, endDate,error,deleteError,deleting,updating,updateError } = state
 
   const getTaskList = async () => {
     //@ts-ignore
@@ -61,7 +54,11 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <>
-          <ActionController />
+          <ActionController
+            showCreateTaskForm={showCreateTaskForm}
+            setShowCreateTaskForm={setShowCreateTaskForm}
+          />
+          {/* @ts-ignore */}
           <TaskList
             tasks={tasks}
             loading={loading}
@@ -69,6 +66,13 @@ export default function Home() {
             selectedPriority={selectedPriority}
             startDate={startDate}
             endDate={endDate}
+            error={error}
+            deleteError={deleteError}
+            deleting={deleting}
+            updating={updating}
+            updateError={updateError}
+            showUpdateTaskForm={showUpdateTaskForm}
+            setShowUpdateTaskForm={setShowUpdateTaskForm}
           />
         </>
       </div>
